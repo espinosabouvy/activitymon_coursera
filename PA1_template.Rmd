@@ -2,7 +2,7 @@
 title: "Monitoring Activities- coursera proyect"
 author: "Luis Espinosa Bouvy"
 date: "22 de octubre de 2016"
-output: html_doc
+output: github_document
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
