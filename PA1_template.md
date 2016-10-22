@@ -1,45 +1,71 @@
----
-title: "Monitoring Activities- coursera proyect"
-author: "Luis Espinosa Bouvy"
-date: "22 de octubre de 2016"
-output: github_document
----
+Monitoring Activities- coursera proyect
+================
+Luis Espinosa Bouvy
+22 de octubre de 2016
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+GENERAL REPORT FOR MONITORING ACTIVITIES
+========================================
 
-#GENERAL REPORT FOR MONITORING ACTIVITIES
+Loading and cleaning data
+-------------------------
 
-##Loading and cleaning data
-Loading and cleaning data requires reading a csv containing the information  
-from a zip file and giving some variables the correct format so as loading  
+Loading and cleaning data requires reading a csv containing the information
+from a zip file and giving some variables the correct format so as loading
 the required libraries.
-```{R}
+
+``` r
 #libraries
      library(ggplot2)
      library(dplyr)
-     
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
      ##reading zip and data
      datos <- read.csv(unz("activity.zip", "activity.csv"))
      datos[,2] = as.Date(as.character(datos[,2]))
 ```
+
 The total steps taken per day where:
-```{R}
+
+``` r
      by.day <- group_by(datos, date)%>%
           summarise("total" = sum(steps, na.rm=T))
 
      #histogram steps by day
      hist(by.day$total, col = "green", 
           main = "Daily Total Steps", xlab = "Total steps")
+```
+
+![](PA1_template_files/figure-markdown_github/unnamed-chunk-2-1.png)
+
+``` r
      #mean and median
      mean(by.day$total)
+```
+
+    ## [1] 9354.23
+
+``` r
      median(by.day$total)
 ```
 
-The average daily activity pattern  for each 5 min interval is show in the  
-following plot. 
-```{r}
+    ## [1] 10395
+
+The average daily activity pattern for each 5 min interval is show in the
+following plot.
+
+``` r
      by.interval <- group_by(datos, interval)%>%
           summarise("mean" = mean(steps, na.rm=T))
      media <- mean(by.interval$mean)
@@ -49,23 +75,31 @@ following plot.
           geom_hline(yintercept =  mean(by.interval$mean), 
                      col = "green")
 ```
-  
-  
-  The interval with the maximum mean steps is **`r by.interval[by.interval[,2] == max(by.interval[,2]),1]`**
+
+![](PA1_template_files/figure-markdown_github/unnamed-chunk-3-1.png)
+
+The interval with the maximum mean steps is **835**
 
 The data includes NA values
-```{r}
+
+``` r
 #missing values
      sum(is.na(datos$steps))
 ```
 
-The missing values were treated as follows:  
-1. Found the mean steps for each interval 
-2. Replaced NA values with mean steps of the interval
+    ## [1] 2304
 
-```{r}
+The missing values were treated as follows:
+1. Found the mean steps for each interval 2. Replaced NA values with mean steps of the interval
+
+``` r
     #missing values
      sum(is.na(datos$steps))
+```
+
+    ## [1] 2304
+
+``` r
      #fill the missing values by interval using average of same interval
      #of other days
      by.interval <- group_by(datos, interval)%>%
@@ -86,22 +120,39 @@ The missing values were treated as follows:
 ```
 
 Mean and median for original data are:
-```{r}
+
+``` r
      #mean and median
      mean(fixed.by.day$total)
+```
+
+    ## [1] 10765.64
+
+``` r
      median(fixed.by.day$total)
 ```
 
+    ## [1] 10762
+
 After computing NA's mean and median are:
-```{r}
+
+``` r
      #mean and median
      mean(by.day$total)
+```
+
+    ## [1] 9354.23
+
+``` r
      median(by.day$total)
 ```
 
-Check the following plot to see the differences, the data is now more  
-centralized, because of the strategy. 
-```{r}
+    ## [1] 10395
+
+Check the following plot to see the differences, the data is now more
+centralized, because of the strategy.
+
+``` r
      #table for plotting
      by.day$origin <- "original"
      fixed.by.day$origin <- "fixed"
@@ -112,10 +163,12 @@ centralized, because of the strategy.
                          binwidth = 5000) 
 ```
 
-Making reference for the activities between weekday and weekends we can  
+![](PA1_template_files/figure-markdown_github/unnamed-chunk-8-1.png)
+
+Making reference for the activities between weekday and weekends we can
 see no big differences
 
-```{r}
+``` r
      #fill the missing values by interval using average of same interval
      #of other days
      by.interval <- group_by(datos, interval)%>%
@@ -141,3 +194,4 @@ see no big differences
           ggtitle("Interval steps by weekday and weekend")
 ```
 
+![](PA1_template_files/figure-markdown_github/unnamed-chunk-9-1.png)

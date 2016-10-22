@@ -1,45 +1,29 @@
----
-title: "Monitoring Activities- coursera proyect"
-author: "Luis Espinosa Bouvy"
-date: "22 de octubre de 2016"
-output: github_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-#GENERAL REPORT FOR MONITORING ACTIVITIES
-
-##Loading and cleaning data
-Loading and cleaning data requires reading a csv containing the information  
-from a zip file and giving some variables the correct format so as loading  
-the required libraries.
-```{R}
-#libraries
+clean <- function(){
+     #libraries
      library(ggplot2)
      library(dplyr)
      
      ##reading zip and data
      datos <- read.csv(unz("activity.zip", "activity.csv"))
      datos[,2] = as.Date(as.character(datos[,2]))
-```
-The total steps taken per day where:
-```{R}
+}
+
+task1 <- function(){
+
+     #steps by day
      by.day <- group_by(datos, date)%>%
           summarise("total" = sum(steps, na.rm=T))
-
      #histogram steps by day
      hist(by.day$total, col = "green", 
           main = "Daily Total Steps", xlab = "Total steps")
      #mean and median
      mean(by.day$total)
      median(by.day$total)
-```
+     
+}
+task2 <- function(){
 
-The average daily activity pattern  for each 5 min interval is show in the  
-following plot. 
-```{r}
+     #steps by day
      by.interval <- group_by(datos, interval)%>%
           summarise("mean" = mean(steps, na.rm=T))
      media <- mean(by.interval$mean)
@@ -48,23 +32,13 @@ following plot.
            main = "Mean steps by interval of day") + 
           geom_hline(yintercept =  mean(by.interval$mean), 
                      col = "green")
-```
-  
-  
-  The interval with the maximum mean steps is **`r by.interval[by.interval[,2] == max(by.interval[,2]),1]`**
-
-The data includes NA values
-```{r}
-#missing values
-     sum(is.na(datos$steps))
-```
-
-The missing values were treated as follows:  
-1. Found the mean steps for each interval 
-2. Replaced NA values with mean steps of the interval
-
-```{r}
-    #missing values
+     #interval with mean max in day
+     by.interval[by.interval[,2] == max(by.interval[,2]),]
+     
+}
+task3 <- function(){
+     
+     #missing values
      sum(is.na(datos$steps))
      #fill the missing values by interval using average of same interval
      #of other days
@@ -83,25 +57,15 @@ The missing values were treated as follows:
      #original data
      by.day <- group_by(datos, date)%>%
           summarise("total" = sum(steps, na.rm=T))
-```
-
-Mean and median for original data are:
-```{r}
+     
      #mean and median
      mean(fixed.by.day$total)
      median(fixed.by.day$total)
-```
-
-After computing NA's mean and median are:
-```{r}
+     
      #mean and median
      mean(by.day$total)
      median(by.day$total)
-```
-
-Check the following plot to see the differences, the data is now more  
-centralized, because of the strategy. 
-```{r}
+     
      #table for plotting
      by.day$origin <- "original"
      fixed.by.day$origin <- "fixed"
@@ -110,12 +74,10 @@ centralized, because of the strategy.
      ggplot(for.plot, aes(total, fill = origin)) + 
           geom_histogram(alpha = .5, position = 'identity',
                          binwidth = 5000) 
-```
-
-Making reference for the activities between weekday and weekends we can  
-see no big differences
-
-```{r}
+     
+}
+task4 <- function(){
+     
      #fill the missing values by interval using average of same interval
      #of other days
      by.interval <- group_by(datos, interval)%>%
@@ -138,6 +100,6 @@ see no big differences
      ggplot(data = for.plot, aes(interval, mean.steps)) + 
           geom_line() + facet_grid(type~.) + geom_path(colour = "navy") +
           ylab("Mean step") + 
-          ggtitle("Interval steps by weekday and weekend")
-```
-
+          ggtitle("Interval steps by weeday and weekend")
+          
+}
