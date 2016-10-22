@@ -2,9 +2,8 @@
 title: "Monitoring Activities- coursera proyect"
 author: "Luis Espinosa Bouvy"
 date: "22 de octubre de 2016"
-output: github_document
+output: html_doc
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -140,4 +139,3 @@ see no big differences
           ylab("Mean step") + 
           ggtitle("Interval steps by weekday and weekend")
 ```
-
